@@ -740,16 +740,19 @@ the longest possible time to redeem it on-chain:
 Thus, the worst case is `3R+2G+2S`, assuming `R` is at least 1. Note that the
 chances of three reorganizations in which the other node wins all of them is
 low for `R` of 2 or more. Since high fees are used (and HTLC spends can use
-almost arbitrary fees), `S` should be small; although, given that block times are
-irregular and empty blocks still occur, `S=2` should be considered a
-minimum. Similarly, the grace period `G` can be low (1 or 2), as nodes are
-required to timeout or fulfill as soon as possible; but if `G` is too low it increases the
-risk of unnecessary channel closure due to networking delays.
+almost arbitrary fees), `S` should be small during normal operation; although,
+given that block times are irregular, empty blocks still occur, and fees may
+vary greatly, `S=2` should be considered a minimum. `S` is also the parameter
+that may vary the most under attack, so a higher value may be desirable when
+non negligible amounts are engaged. The grace period `G` can be low (1 or 2),
+as nodes are required to timeout or fulfill as soon as possible; but if `G` is
+too low it increases the risk of unnecessary channel closure due to networking
+delays.
 
 There are four values that need be derived:
 
 1. the `cltv_expiry_delta` for channels, `3R+2G+2S`: if in doubt, a
-   `cltv_expiry_delta` of 12 is reasonable (R=2, G=1, S=2).
+   `cltv_expiry_delta` of at least 12 is reasonable (R=2, G=1, S=2).
 
 2. the deadline for offered HTLCs: the deadline after which the channel has to be failed
    and timed out on-chain. This is `G` blocks after the HTLC's
